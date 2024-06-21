@@ -36,7 +36,14 @@ Vagrant.configure("2") do |config|
     end
   end
   
- 
+  config.vm.provider "virtualbox" do |vb|
+    # Add a new storage controller
+    vb.customize ["storagectl", :id, "--name", "SATAController", "--add", "sata", "--controller", "IntelAHCI"]
+    
+    # Attach a new storage device with 50GB size
+    vb.customize ["createhd", "--filename", "newdisk.vdi", "--size", 51200] # Size is in MB (50GB here)
+    vb.customize ["storageattach", :id, "--storagectl", "SATAController", "--port", 1, "--device", 0, "--type", "hdd", "--medium", "newdisk.vdi"]
+  end
 
   # Enable internet access from VMs
   config.vm.provider "virtualbox" do |vb|

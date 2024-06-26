@@ -38,7 +38,11 @@ Vagrant.configure("2") do |config|
         # Ensure the existing file is removed before creating a new one
         disk_filename = "kube-worker-#{i}-newdisk.vdi"
         #vb.customize ["closemedium", "disk", disk_filename, "--delete"]
-        vb.customize ["createhd", "--filename", disk_filename, "--size", 51200]
+        
+        unless File.exist?(disk_filename)
+          vb.customize ["createhd", "--filename", disk_filename, "--size", 51200]
+        end
+        
         #vb.customize ["storagectl", :id, "--name", "SATAControllerWorker#{i}", "--add", "sata", "--controller", "IntelAHCI"]
         vb.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 3, "--device", 0, "--type", "hdd", "--medium", disk_filename]
 

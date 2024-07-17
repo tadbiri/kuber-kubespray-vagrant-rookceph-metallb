@@ -2,7 +2,7 @@
 
 # Define the number of master, worker, and load balancer nodes
 NUM_MASTERS = 1
-NUM_WORKERS = 3
+NUM_WORKERS = 2
 NUM_LOADBALANCERS = 0
 
 # Define the IP range for each type of node
@@ -14,6 +14,6 @@ LOADBALANCER_IP_START = "192.168.56.110"
 MASTER_CPU = 2
 MASTER_MEMORY = 2048
 WORKER_CPU = 2
-WORKER_MEMORY = 2048
+WORKER_MEMORY = 3048
 LOADBALANCER_CPU = 1
 LOADBALANCER_MEMORY = 1024

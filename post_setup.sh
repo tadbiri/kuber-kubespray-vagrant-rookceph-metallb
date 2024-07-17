@@ -38,7 +38,7 @@ echo "####################################### Post_Script: Disable swap area on 
 master1ip=$(cat /etc/hosts | grep kube-master-1 | awk '{print $1}')
 worker1ip=$(cat /etc/hosts | grep kube-worker-1 | awk '{print $1}')
 worker2ip=$(cat /etc/hosts | grep kube-worker-2 | awk '{print $1}')
-worker3ip=$(cat /etc/hosts | grep kube-worker-3 | awk '{print $1}')
+#worker3ip=$(cat /etc/hosts | grep kube-worker-3 | awk '{print $1}')
 
 # Remove any existing kubespray directory and create new one
 kubespray_dir="./kubespray"
@@ -58,7 +58,8 @@ sudo pip3 install -r requirements.txt
 # Copy ``inventory/sample`` as ``inventory/mycluster``
 sudo cp -rfp inventory/sample inventory/mycluster
 # Update Ansible inventory file with inventory builder
-declare -a IPS=("${master1ip}" "${worker1ip}" "${worker2ip}" "${worker3ip}")
+declare -a IPS=("${master1ip}" "${worker1ip}" "${worker2ip}")
+#declare -a IPS=("${master1ip}" "${worker1ip}" "${worker2ip}" "${worker3ip}")
 sudo CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 
 sudo echo '
@@ -82,12 +83,12 @@ all:
       access_ip: 192.168.56.22
       ansible_connection: ssh
       ansible_user: root
-    kube-worker-3:
-      ansible_host: 192.168.56.23
-      ip: 192.168.56.23
-      access_ip: 192.168.56.23
-      ansible_connection: ssh
-      ansible_user: root      
+    #kube-worker-3:
+    #  ansible_host: 192.168.56.23
+    #  ip: 192.168.56.23
+    #  access_ip: 192.168.56.23
+    #  ansible_connection: ssh
+    #  ansible_user: root      
   children:
     kube-master:
       hosts:
@@ -97,7 +98,7 @@ all:
         kube-master-1:
         kube-worker-1:
         kube-worker-2:
-        kube-worker-3:
+    #    kube-worker-3:
     etcd:
       hosts:
         kube-master-1:
@@ -138,3 +139,7 @@ sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
 sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
 sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
+#install helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh

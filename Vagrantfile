@@ -19,9 +19,13 @@ Vagrant.configure("2") do |config|
       end
       # Copy post_setup.sh on the load balancer node
       node.vm.provision "file", source: "./post_setup.sh", destination: "/home/vagrant/post_setup.sh"
+      node.vm.provision "file", source: "./kube-manifests", destination: "/home/vagrant/"
       node.vm.provision "shell", inline: "sudo cp /home/vagrant/post_setup.sh /root"
+      node.vm.provision "shell", inline: "sudo cp -r /home/vagrant/kube-manifests /root"
       node.vm.provision "shell", inline: "sudo chown root: /root/post_setup.sh"
+      node.vm.provision "shell", inline: "sudo chown -R root: /root/kube-manifests"
       node.vm.provision "shell", inline: "sudo chmod +x /root/post_setup.sh"
+      node.vm.provision "shell", inline: "sudo chmod -R 775 /root/kube-manifests"
     end 
   end
 

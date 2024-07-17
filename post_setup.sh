@@ -143,3 +143,9 @@ sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+
+# taint master to noschedule
+kubectl taint nodes kube-master-1 node-role.kubernetes.io/master=:NoSchedule
+
+#apply metrics-server for monitor 
+kubectl apply -f /root/kube-manifests/metric-server.yaml

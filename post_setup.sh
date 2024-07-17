@@ -120,32 +120,42 @@ sudo sed -i 's/cluster.local/tedcluster.com/' inventory/mycluster/group_vars/k8s
 
 # Start installing k&s cluster with ansible kubespray
 sudo ansible-playbook -i inventory/mycluster/hosts.yaml --user root cluster.yml
+sudo kubectl get all -A
+echo "####################################### Post_Script: Installing k&s cluster Finished \n\n"
 
 #Install and config kubectl on lb
-sudo apt-get install --q -y apt-transport-https ca-certificates curl gnupg >/dev/null 2>&1
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg 
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list 
-sudo apt-get update --q >/dev/null 2>&1
-sudo apt-get install --q -y kubectl >/dev/null 2>&1
-sudo mkdir ~/.kube
-sudo scp -r root@kube-master-1:/etc/kubernetes/admin.conf ~/.kube/config
+#sudo apt-get install --q -y apt-transport-https ca-certificates curl gnupg >/dev/null 2>&1
+#curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+#sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg 
+#echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+#sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list 
+#sudo apt-get update --q >/dev/null 2>&1
+#sudo apt-get install --q -y kubectl >/dev/null 2>&1
+#sudo mkdir ~/.kube
+#sudo scp -r root@kube-master-1:/etc/kubernetes/admin.conf ~/.kube/config
 
-sudo kubectl get all -A
+#sudo kubectl get all -A
+
 
 # Install kubectx and kubens
 sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
 sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
 sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+echo "####################################### Post_Script: Installing kubectx and kubens Finished \n\n"
+
 
 #install helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+helm version
+echo "####################################### Post_Script: Installing helm Finished \n\n"
 
 # taint master to noschedule
 kubectl taint nodes kube-master-1 node-role.kubernetes.io/master=:NoSchedule
+apt install -qq -y jq >/dev/null 2>&1
+kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, taints: .spec.taints}'
+echo "####################################### Post_Script: taint master to noschedule \n\n"
 
 #apply metrics-server for monitor 
-kubectl apply -f /root/kube-manifests/metric-server.yaml
+kubectl apply -f /root/kube-manifests/metrics-server.yaml

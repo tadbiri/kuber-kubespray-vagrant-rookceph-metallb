@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
         #vb.customize ["closemedium", "disk", disk_filename, "--delete"]
         
         unless File.exist?(disk_filename)
-          vb.customize ["createhd", "--filename", disk_filename, "--size", 51200]
+          vb.customize ["createhd", "--filename", disk_filename, "--size", 200000]
         end
         
         #vb.customize ["storagectl", :id, "--name", "SATAControllerWorker#{i}", "--add", "sata", "--controller", "IntelAHCI"]

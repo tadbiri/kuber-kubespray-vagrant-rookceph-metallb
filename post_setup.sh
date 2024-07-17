@@ -87,7 +87,7 @@ all:
       ip: 192.168.56.23
       access_ip: 192.168.56.23
       ansible_connection: ssh
-      ansible_user: root
+      ansible_user: root      
   children:
     kube-master:
       hosts:
